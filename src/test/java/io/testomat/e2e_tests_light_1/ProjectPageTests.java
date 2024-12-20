@@ -3,10 +3,12 @@ package io.testomat.e2e_tests_light_1;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
@@ -17,9 +19,6 @@ import static io.testomat.e2e_tests_light_1.utils.StringParsesrs.getNumberFromTe
 
 public class ProjectPageTests extends BaseTest {
 
-    static String baseURL = env.get("BASE_URL");
-    static String userEmail = env.get("USEREMAIL");
-    static String userPassword = env.get("USERPASSWORD");
     String targetProjectName = "Manufacture light";
 
     @BeforeAll
@@ -36,7 +35,6 @@ public class ProjectPageTests extends BaseTest {
 
     @Test
     public void userCanFindProjectWithTests() {
-
         searchForProject(targetProjectName);
 
         selectProject(targetProjectName);
@@ -46,7 +44,6 @@ public class ProjectPageTests extends BaseTest {
 
     @Test
     public void checkProjectTestCasesNumberTest() {
-
         searchForProject(targetProjectName);
 
         SelenideElement targetProject = countOfProjectsShouldBeEqualsTo(1).first();
@@ -54,37 +51,25 @@ public class ProjectPageTests extends BaseTest {
         countTestCasesShouldBeEqualsTo(targetProject, 0);
     }
 
-    private static void waitForProjectPageIsLoaded(String targetProjectName) {
-        $(".first h2").shouldHave(text(targetProjectName));
-        $(".first [href*='/readme']").shouldHave(text("Readme"));
+    private static Stream<Arguments> customSearchProvider() {
+        return Stream.of(
+                Arguments.of("Manufacture", 2),
+                Arguments.of("Outdoors", 9),
+                Arguments.of("Popopo", 3),
+                Arguments.of("Custom", 0)
+        );
     }
 
-    private static void selectProject(String targetProjectName) {
-        $(byText(targetProjectName)).click();
+    @ParameterizedTest
+    @MethodSource("customSearchProvider")
+    @DisplayName("Verify the number of visible projects when using the proper key in the search field.")
+    public void verifyProjectSearchFunctionalityTest(String searchedValue, int numberOfVisibleProject){
+        searchForProject(searchedValue);
+
+        int visibleCount = countVisibleProjectsOnPage();
+
+        Assertions.assertEquals(numberOfVisibleProject, visibleCount);
     }
 
-    private static void searchForProject(String targetProjectName) {
-        $("[id='search']").setValue(targetProjectName);
-    }
 
-    private void countTestCasesShouldBeEqualsTo(SelenideElement targetProject, int expectedCount) {
-
-        targetProject.$("span").shouldHave(text("Classical"));
-        String countOfTests = targetProject.$("p").getText();
-
-        Assertions.assertEquals(expectedCount, getNumberFromText(countOfTests));
-    }
-
-    @NotNull
-    private static ElementsCollection countOfProjectsShouldBeEqualsTo(int expectedSize) {
-        return $$("#grid ul li").filter(visible).shouldHave(size(expectedSize));
-    }
-
-    public static void loginUser(String email, String password) {
-        $("#content-desktop #user_email").setValue(email);
-        $("#content-desktop #user_password").setValue(password);
-        $("#content-desktop #user_remember_me").click();
-        $("#content-desktop [type=\"submit\"]").click();
-        $(".common-flash-success").shouldBe(visible);
-    }
 }
