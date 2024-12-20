@@ -1,8 +1,6 @@
 package io.testomat.e2e_tests_light_1;
 
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -10,12 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static com.codeborne.selenide.CollectionCondition.size;
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.*;
-import static io.testomat.e2e_tests_light_1.utils.StringParsesrs.getNumberFromText;
+import static com.codeborne.selenide.Selenide.open;
 
 public class ProjectPageTests extends BaseTest {
 
@@ -63,7 +56,7 @@ public class ProjectPageTests extends BaseTest {
     @ParameterizedTest
     @MethodSource("customSearchProvider")
     @DisplayName("Verify the number of visible projects when using the proper key in the search field.")
-    public void verifyProjectSearchFunctionalityTest(String searchedValue, int numberOfVisibleProject){
+    public void verifyProjectSearchFunctionalityTest(String searchedValue, int numberOfVisibleProject) {
         searchForProject(searchedValue);
 
         int visibleCount = countVisibleProjectsOnPage();
