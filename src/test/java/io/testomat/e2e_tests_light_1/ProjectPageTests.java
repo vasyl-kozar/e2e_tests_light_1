@@ -1,6 +1,8 @@
 package io.testomat.e2e_tests_light_1;
 
-import com.codeborne.selenide.SelenideElement;
+import io.testomat.e2e_tests_light_1.web.ProjectPage;
+import io.testomat.e2e_tests_light_1.web.ProjectsPage;
+import io.testomat.e2e_tests_light_1.web.SignInPage;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -8,40 +10,20 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static com.codeborne.selenide.Selenide.open;
-
 public class ProjectPageTests extends BaseTest {
 
-    String targetProjectName = "Manufacture light";
+    private static final String userEmail = env.get("USEREMAIL");
+    private static final String userPassword = env.get("USERPASSWORD");
+    private static final ProjectsPage projectsPage = new ProjectsPage();
+    private static final SignInPage signInPage = new SignInPage();
+    private static final ProjectPage projectPage = new ProjectPage();
+    private final String targetProjectName = "Manufacture light";
 
     @BeforeAll
     static void openTestomatAndLogin() {
-        open(baseURL);
-
-        loginUser(userEmail, userPassword);
-    }
-
-    @BeforeEach
-    void OpenHomePage() {
-        open(baseURL);
-    }
-
-    @Test
-    public void userCanFindProjectWithTests() {
-        searchForProject(targetProjectName);
-
-        selectProject(targetProjectName);
-
-        waitForProjectPageIsLoaded(targetProjectName);
-    }
-
-    @Test
-    public void checkProjectTestCasesNumberTest() {
-        searchForProject(targetProjectName);
-
-        SelenideElement targetProject = countOfProjectsShouldBeEqualsTo(1).first();
-
-        countTestCasesShouldBeEqualsTo(targetProject, 0);
+        signInPage.open();
+        signInPage.loginUser(userEmail, userPassword);
+        projectsPage.isSignInSuccess();
     }
 
     private static Stream<Arguments> customSearchProvider() {
@@ -53,16 +35,39 @@ public class ProjectPageTests extends BaseTest {
         );
     }
 
+    @BeforeEach
+    void OpenProjectsPage() {
+        projectsPage.open();
+        projectsPage.isLoaded();
+    }
+
+    @Test
+    public void userCanFindProjectWithTests() {
+
+        projectsPage.searchForProject(targetProjectName);
+
+        projectsPage.selectProject(targetProjectName);
+
+        projectPage.isLoaded(targetProjectName);
+    }
+
+    @Test
+    public void checkProjectTestCasesNumberTest() {
+        projectsPage.searchForProject(targetProjectName);
+
+        var targetProject = projectsPage.countOfProjectsShouldBeEqualsTo(1).first();
+
+        projectsPage.countTestCasesShouldBeEqualsTo(targetProject, 0);
+    }
+
     @ParameterizedTest
     @MethodSource("customSearchProvider")
     @DisplayName("Verify the number of visible projects when using the proper key in the search field.")
     public void verifyProjectSearchFunctionalityTest(String searchedValue, int numberOfVisibleProject) {
-        searchForProject(searchedValue);
+        projectsPage.searchForProject(searchedValue);
 
-        int visibleCount = countVisibleProjectsOnPage();
+        var visibleCount = projectsPage.countVisibleProjectsOnPage();
 
         Assertions.assertEquals(numberOfVisibleProject, visibleCount);
     }
-
-
 }
