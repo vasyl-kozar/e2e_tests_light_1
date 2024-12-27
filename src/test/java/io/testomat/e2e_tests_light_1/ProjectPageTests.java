@@ -14,6 +14,7 @@ public class ProjectPageTests extends BaseTest {
 
     private static final String userEmail = env.get("USEREMAIL");
     private static final String userPassword = env.get("USERPASSWORD");
+
     private static final ProjectsPage projectsPage = new ProjectsPage();
     private static final SignInPage signInPage = new SignInPage();
     private static final ProjectPage projectPage = new ProjectPage();
@@ -43,7 +44,6 @@ public class ProjectPageTests extends BaseTest {
 
     @Test
     public void userCanFindProjectWithTests() {
-
         projectsPage.searchForProject(targetProjectName);
 
         projectsPage.selectProject(targetProjectName);
