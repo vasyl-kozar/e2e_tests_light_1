@@ -20,20 +20,26 @@ public class ProjectsPage {
         Selenide.open("");
     }
 
-    public void searchForProject(String targetProjectName) {
+    public ProjectsPage searchForProject(String targetProjectName) {
         searchInput.setValue(targetProjectName);
+
+        return this;
     }
 
-    public void selectProject(String targetProjectName) {
+    public ProjectsPage selectProject(String targetProjectName) {
         $(byText(targetProjectName)).click();
+
+        return this;
     }
 
     public void isSignInSuccess() {
         $("#container .common-flash-success").shouldBe(visible);
     }
 
-    public void isLoaded() {
+    public ProjectsPage isLoaded() {
         searchInput.shouldBe(visible);
+
+        return this;
     }
 
     @NotNull
