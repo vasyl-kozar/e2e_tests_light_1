@@ -10,11 +10,11 @@ public class CollectionOfElementsTests extends BaseTest {
     @Test
     @DisplayName("Find all product experiments")
     void FindAllProductExperiments() {
-        var lableCountOfTests = $$("ul li p")
+        var labelCountOfTests = $$("ul li p")
                 .shouldHave(CollectionCondition.sizeGreaterThan(0));
 
-        for (SelenideElement lableCountOfTest : lableCountOfTests) {
-            lableCountOfTest.shouldHave(Condition.text("13 tests").or(Condition.text("0 tests")));
+        for (SelenideElement labelCountOfTest : labelCountOfTests) {
+            labelCountOfTest.shouldHave(Condition.text("13 tests").or(Condition.text("0 tests")));
         }
     }
 
