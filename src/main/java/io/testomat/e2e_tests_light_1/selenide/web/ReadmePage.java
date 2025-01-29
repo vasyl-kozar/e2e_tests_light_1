@@ -1,4 +1,4 @@
-package io.testomat.e2e_tests_light_1.web;
+package io.testomat.e2e_tests_light_1.selenide.web;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selectors;

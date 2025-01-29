@@ -1,4 +1,4 @@
-package io.testomat.e2e_tests_light_1.utils;
+package io.testomat.e2e_tests_light_1.selenide.utils;
 
 import org.jetbrains.annotations.NotNull;
 
